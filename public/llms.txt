@@ -40,7 +40,10 @@ Information about WCAG compliance and accessibility features.
 
 ## How to Contact Us
 
-- (No contact details configured yet.)
+- Email: 88991010nuahe@gmail.com
+- Phone: +972509988213
+- Phone (tel): tel:+972509988213
+- Address: פרחי הוורד, יבנה, ישראל, יבנה, ישראל
 
 ### Contact form
 - URL: https://example.com/contact
