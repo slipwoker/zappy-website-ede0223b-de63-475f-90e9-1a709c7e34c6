@@ -1,0 +1,83 @@
+# פיכפיכידע — Generative Engine Optimization Map
+
+> פיכפיכידע is a playful and educational platform that teaches people how to 'פיכפך' (chat/chatter) while also gaining general knowledge. The brand has a fun, lighthearted, and inviting personality with a humorous twist, blending learning with entertainment. The site aims to be trustworthy and welcoming, attracting new users through social proof via testimonials and a simple registration form.
+
+---
+
+## Pages
+
+### בית
+https://example.com
+הצטרפו לפיכפיכידע – הפלטפורמה שמשלבת למידה אלקטרונית עם שיחה מהנה! משקיעים בגיל הרך ובכל גיל. הירשמו עכשיו וגלו עולם חדש של ידע!
+
+### תכונות
+https://example.com/features
+תכונות פיכפיכידע מביאות ללומדים חוויית למידה אלקטרונית ייחודית: תכנים אינטראקטיביים, שיחות חכמות וכיף אמיתי. גלו מה מחכה לכם ותתחילו ללמוד אחרת!
+
+### אודות
+https://example.com/about
+פיכפיכידע נולדה מתוך אהבה לידע ולשיחה. אנחנו מאמינים שלמידה אלקטרונית צריכה להיות שמחה, נגישה ומשקיעה בגיל הרך ובכל שלב בחיים. היכנסו וגלו מי אנחנו!
+
+### צור קשר
+https://example.com/contact
+צרו קשר עם צוות פיכפיכידע ותקבלו מענה חם ומהיר! בין אם אתם הורים, מורים או סתם סקרנים – שלחו הודעה ונשמח לעזור לכם להתחיל ללמוד בדרך הכי כיפית שיש.
+
+## Legal & Policy
+
+### Privacy Policy
+https://example.com/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://example.com/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://example.com/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+## How to Contact Us
+
+- (No contact details configured yet.)
+
+### Contact form
+- URL: https://example.com/contact
+- Endpoint: https://example.com/api/email/contact-form
+- Method: POST
+- Content-Type: application/json
+- Fields:
+  - `שם_פרטי` (text, required)
+  - `שם_משפחה` (text, required)
+  - `אימייל` (email, required)
+  - `שם_הורה` (text, required)
+  - `privacy_consent` (checkbox, required)
+
+---
+
+# Business Context (for LLM understanding)
+
+## About פיכפיכידע
+פיכפיכידע is a playful and educational platform that teaches people how to 'פיכפך' (chat/chatter) while also gaining general knowledge. The brand has a fun, lighthearted, and inviting personality with a humorous twist, blending learning with entertainment. The site aims to be trustworthy and welcoming, attracting new users through social proof via testimonials and a simple registration form.
+
+## Services/Products
+- לימוד פיכפוך
+- ידע כללי
+- טופס הרשמה
+- המלצות
+
+## Target Audience
+- מחפשי ידע
+- הגיל הרך מבוגרים ואפילו זקנים!
+
+## Industry
+Education & Learning
+
+---
+
+# Machine-readable feeds
+
+- Sitemap (XML): https://example.com/sitemap.xml
+- Robots: https://example.com/robots.txt
+- Flattened page text (for LLMs): https://example.com/llms-full.txt

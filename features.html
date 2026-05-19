@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>גלו את הכלים שהופכים למידה להרפתקה — פיכפיכידע</title>
+    <meta name="description" content="תכונות פיכפיכידע מביאות ללומדים חוויית למידה אלקטרונית ייחודית: תכנים אינטראקטיביים, שיחות חכמות וכיף אמיתי. גלו מה מחכה לכם ותתחילו ללמוד אחרת!">
+    <meta name="keywords" content="electronic learning, e learning in education, תכונות פלטפורמת למידה, למידה אינטראקטיבית, פיכפיכידע לכולם!">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'ede0223b-de63-475f-90e9-1a709c7e34c6',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="גלו את הכלים שהופכים למידה להרפתקה — פיכפיכידע">
+    <meta property="og:description" content="תכונות פיכפיכידע מביאות ללומדים חוויית למידה אלקטרונית ייחודית: תכנים אינטראקטיביים, שיחות חכמות וכיף אמיתי. גלו מה מחכה לכם ותתחילו ללמוד אחרת!">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="גלו את הכלים שהופכים למידה להרפתקה — פיכפיכידע">
+    <meta name="twitter:description" content="תכונות פיכפיכידע מביאות ללומדים חוויית למידה אלקטרונית ייחודית: תכנים אינטראקטיביים, שיחות חכמות וכיף אמיתי. גלו מה מחכה לכם ותתחילו ללמוד אחרת!">
+    <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .skip-link { position: absolute; top: 0; left: 0; transform: translateY(-200%); padding: 12px 18px; background: var(--bg-dark, #1a1a1a); color: var(--text-light, #fff); font-weight: 600; border-radius: 0 0 8px 0; z-index: 10000; }
+    .skip-link:focus { transform: none; outline: 2px solid var(--ring, #fff); outline-offset: 2px; }
+    :focus-visible { outline: 2px solid var(--ring, currentColor); outline-offset: 3px; }
+  </style>
+
+
+  
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: var(--text-dark, #333) !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
+      [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 10px !important; padding-right: 28px !important; }
+      .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus (exclude catalog sub-menus that use <a> children instead of <li>) */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))):not(:has(> a)), .sub-menu:not(:has(li)):not(:has(> a)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .navbar .sub-menu.mobile-expanded, .nav-menu .sub-menu.mobile-expanded, #navMenu .sub-menu.mobile-expanded { max-height: none !important; overflow-y: visible !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-light) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-light) !important; white-space: normal !important; }
+        .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
+        [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 0 !important; padding-right: 28px !important; }
+        .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
+        .nav-menu.active, #navMenu.active { max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-light) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      html[dir="rtl"] .whatsapp-float { right: 20px !important; left: auto !important; }
+      html[dir="ltr"] .whatsapp-float, html:not([dir]) .whatsapp-float { left: 20px !important; right: auto !important; }
+      html[dir="rtl"] #mic-access-tool-general-button, html[dir="rtl"] .mic-access-tool-general-button,
+      html[dir="rtl"] #mic-init-access-tool .mic-access-tool-general-button,
+      html[dir="rtl"] #mic-init-access-tool #mic-access-tool-general-button,
+      html[dir="rtl"] ._access-icon { left: 20px !important; right: auto !important; }
+      html[dir="ltr"] #mic-access-tool-general-button, html[dir="ltr"] .mic-access-tool-general-button,
+      html[dir="ltr"] #mic-init-access-tool .mic-access-tool-general-button,
+      html[dir="ltr"] #mic-init-access-tool #mic-access-tool-general-button,
+      html[dir="ltr"] ._access-icon,
+      html:not([dir]) #mic-access-tool-general-button, html:not([dir]) .mic-access-tool-general-button,
+      html:not([dir]) #mic-init-access-tool .mic-access-tool-general-button,
+      html:not([dir]) #mic-init-access-tool #mic-access-tool-general-button,
+      html:not([dir]) ._access-icon { right: 20px !important; left: auto !important; }
+      @media (max-width: 768px) { .whatsapp-float { display: flex !important; } }
+      @media (min-width: 769px) { .whatsapp-float { display: flex !important; } }
+      @media (max-width: 768px) {
+        #mic-access-tool-general-button, .mic-access-tool-general-button,
+        #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+        ._access-icon { display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; }
+        #mic-access-tool-box.opened-mic-access-tool, .mic-access-tool-box.opened-mic-access-tool,
+        #mic-init-access-tool #mic-access-tool-box.opened-mic-access-tool {
+          visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;
+        }
+      }
+      @media (min-width: 769px) {
+        #mic-access-tool-general-button, .mic-access-tool-general-button,
+        #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+        ._access-icon { display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; }
+        #mic-access-tool-box.opened-mic-access-tool, .mic-access-tool-box.opened-mic-access-tool,
+        #mic-init-access-tool #mic-access-tool-box.opened-mic-access-tool {
+          visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;
+        }
+      }
+    </style>
+</head>
+<body>
+<a class="skip-link" href="#main">דלג לתוכן הראשי</a>
+  <nav class="navbar" dir="rtl">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  <button class="phone-header-btn" data-phone="[business_phone]" aria-label="Call">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+
+  <div class="nav-container">
+    <div class="nav-right-group"><div class="nav-brand">
+      <a href="/" class="logo-link"><img class="logo" src="/assets/site--------image-1.webp" alt="פיכפיכידע"></a>
+    </div><ul class="nav-menu" id="navMenu"><li><a href="/">בית</a></li><li><a href="/features">תכונות</a></li><li><a href="/about">אודות</a></li></ul></div>
+
+    
+
+    <div class="nav-cta-container">
+      <a href="/contact" class="nav-cta-btn">צור קשר</a>
+    </div>
+  </div>
+</nav>
+<script>
+
+// Navbar Mobile Menu Toggle and Contrast Fix
+(function() {
+  // Use 'load' event instead of 'DOMContentLoaded' to ensure we run AFTER all other scripts
+  window.addEventListener('load', function() {
+    
+    // FIX MOBILE BUTTON CONTRAST
+    // Detect navbar background color and apply contrasting color to mobile buttons
+    const navbar = document.querySelector('.navbar, nav, header');
+    if (!navbar) {
+      console.log('[Navbar] Navbar element not found');
+      return;
+    }
+    
+    // DECLARE VARIABLES EARLY to avoid Temporal Dead Zone errors
+    // These are used in multiple places below
+    let mobileToggle = document.getElementById('mobileToggle') ||
+                       document.querySelector('.mobile-toggle') ||
+                       document.querySelector('.hamburger') ||
+                       document.querySelector('.hamburger-menu') ||
+                       document.querySelector('.menu-toggle') ||
+                       document.querySelector('.burger-menu') ||
+                       document.querySelector('[aria-label="Menu"]') ||
+                       document.querySelector('[aria-label="תפריט"]');
+    
+    const phoneBtn = document.querySelector('.phone-header-btn');
+    
+    const computedStyle = window.getComputedStyle(navbar);
+    let bgColor = computedStyle.backgroundColor;
+    
+    console.log('[Navbar] Initial navbar background:', bgColor);
+    
+    // Check if background is transparent or rgba with 0 alpha
+    const isTransparent = bgColor === 'transparent' || 
+                         bgColor === 'rgba(0, 0, 0, 0)' ||
+                         (bgColor.startsWith('rgba') && bgColor.includes(', 0)'));
+    
+    if (isTransparent) {
+      // Check for background-image or gradient
+      const bgImage = computedStyle.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        console.log('[Navbar] Navbar has background image/gradient, using dark text');
+        bgColor = 'rgb(240, 240, 240)'; // Assume light background
+      } else {
+        // Transparent navbar - check body background
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        console.log('[Navbar] Navbar transparent, using body background:', bodyBg);
+        bgColor = bodyBg;
+      }
+    }
+    
+    // Calculate luminance to determine if background is light or dark
+    const rgb = bgColor.match(/\d+/g);
+    if (rgb && rgb.length >= 3) {
+      const r = parseInt(rgb[0]);
+      const g = parseInt(rgb[1]);
+      const b = parseInt(rgb[2]);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      
+      // Mobile button colors are set by Claude's AI-generated CSS (same as .nav-menu a)
+      // No dynamic color overrides needed - colors come from the generated navbar CSS
+      console.log('[Navbar] Mobile button colors preserved from Claude CSS (luminance:', luminance.toFixed(2) + ')');
+      
+      // FIX ICON SIZES - Ensure SVGs are properly sized and visible
+      // INJECT CRITICAL CSS TO OVERRIDE ANY CONFLICTING RULES
+      const criticalCSS = document.createElement('style');
+      criticalCSS.id = 'zappy-mobile-nav-fix';
+      const htmlLang = document.documentElement.lang || 'en';
+      const htmlDir = document.documentElement.dir || 'ltr';
+      // Check both dir attribute AND lang for RTL detection
+      // dir="rtl" is the most reliable indicator
+      const isRTL = htmlDir === 'rtl' || htmlLang === 'he' || htmlLang === 'ar';
+      
+      criticalCSS.textContent = `
+        /* Hide mobile buttons on desktop, show only on mobile */
+        @media (min-width: 769px) {
+          .mobile-toggle,
+          .phone-header-btn {
+            display: none !important;
+          }
+        }
+        
+        /* Show and position mobile buttons correctly on mobile */
+        @media (max-width: 768px) {
+          .navbar,
+          nav.navbar {
+            min-height: 70px !important;
+          }
+
+          .mobile-toggle,
+          .phone-header-btn {
+            position: absolute !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            margin-top: auto !important;
+            margin-bottom: auto !important;
+            transform: none !important;
+            z-index: 1001 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 6px !important;
+            background: none !important;
+            color: var(--nav-text, var(--text-light)) !important;
+            touch-action: manipulation !important;
+            -webkit-tap-highlight-color: transparent !important;
+          }
+
+          html[data-zappy-site-type="ecommerce"] .phone-header-btn,
+          body[data-zappy-site-type="ecommerce"] .phone-header-btn,
+          html[data-zappy-site-type="ecommerce"] header .phone-header-btn,
+          html[data-zappy-site-type="ecommerce"] nav .phone-header-btn {
+            display: none !important;
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+          }
+          
+          /* LTR positioning (default): hamburger LEFT, phone RIGHT */
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .mobile-toggle,
+          html[dir="ltr"] .mobile-toggle {
+            left: 12px !important;
+            right: auto !important;
+          }
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .phone-header-btn,
+          html[dir="ltr"] .phone-header-btn {
+            right: 12px !important;
+            left: auto !important;
+          }
+          
+          /* RTL positioning: hamburger RIGHT, phone LEFT */
+          html[dir="rtl"] .mobile-toggle,
+          html[lang="he"] .mobile-toggle,
+          html[lang="ar"] .mobile-toggle {
+            right: 12px !important;
+            left: auto !important;
+          }
+          html[dir="rtl"] .phone-header-btn,
+          html[lang="he"] .phone-header-btn,
+          html[lang="ar"] .phone-header-btn {
+            left: 12px !important;
+            right: auto !important;
+          }
+          
+          /* CRITICAL: Ensure nav-container has min-height on mobile */
+          /* All children are positioned absolutely/fixed on mobile, so height:auto collapses to 0 */
+          .nav-container {
+            min-height: 70px !important;
+            position: relative !important;
+          }
+          
+          /* Ensure SVG icons are properly sized and inherit color */
+          .mobile-toggle svg,
+          .phone-header-btn svg {
+            width: 24px !important;
+            height: 24px !important;
+            /* Don't force display - let JavaScript control hamburger/close toggle */
+          }
+          
+          /* Reset nav-cta-container on mobile - remove desktop box-shadow/padding */
+          /* that creates a visible ghost box when CTA button is hidden */
+          .nav-cta-container {
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          
+          /* Hide nav-cta-container entirely on mobile when there's no lang-switcher */
+          /* (only the CTA button is inside, and it's hidden on mobile) */
+          .nav-cta-container:not(:has(.lang-switcher)) {
+            display: none !important;
+          }
+          
+          /* CRITICAL: Prevent hero image fade gradient from bleeding over headline text */
+          /* The .image-fade-gradient has bottom: -30px (extends below parent) */
+          /* On mobile stacked layout, this overlaps the h1 text below the image */
+          .hero-image-column {
+            overflow: hidden !important;
+          }
+          .image-fade-gradient {
+            bottom: 0 !important;
+          }
+          
+          /* Hide desktop language switcher on mobile - hamburger menu handles it */
+          /* High specificity to override stored CSS */
+          .lang-switcher,
+          .nav-cta-container .lang-switcher,
+          .nav-container .lang-switcher,
+          .navbar .lang-switcher,
+          .navbar .nav-cta-container .lang-switcher {
+            display: none !important;
+          }
+        }
+      `;
+      
+      // Remove existing fix if present and inject new one
+      const existing = document.getElementById('zappy-mobile-nav-fix');
+      if (existing) existing.remove();
+      document.head.appendChild(criticalCSS);
+      
+      console.log('[Navbar] Critical CSS injected for mobile nav positioning');
+      
+      // ONLY apply inline positioning styles on mobile viewport
+      // On desktop, the CSS handles hiding these buttons with display: none
+      // Inline styles were breaking desktop layout by overriding CSS
+      const isMobileViewport = window.innerWidth <= 768;
+      
+      if (mobileToggle) {
+        // Icon sizing applies to all viewports for consistency
+        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
+        const closeIcon = mobileToggle.querySelector('.close-icon');
+        
+        if (hamburgerIcon) {
+          hamburgerIcon.style.setProperty('width', '24px', 'important');
+          hamburgerIcon.style.setProperty('height', '24px', 'important');
+          hamburgerIcon.style.setProperty('display', 'block', 'important'); // Show hamburger by default
+        }
+        if (closeIcon) {
+          closeIcon.style.setProperty('width', '24px', 'important');
+          closeIcon.style.setProperty('height', '24px', 'important');
+          closeIcon.style.setProperty('display', 'none', 'important'); // Hide close icon by default
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          mobileToggle.style.setProperty('position', 'absolute', 'important');
+          mobileToggle.style.setProperty('top', '0', 'important');
+          mobileToggle.style.setProperty('bottom', '0', 'important');
+          mobileToggle.style.setProperty('margin-top', 'auto', 'important');
+          mobileToggle.style.setProperty('margin-bottom', 'auto', 'important');
+          mobileToggle.style.setProperty('transform', 'none', 'important');
+          mobileToggle.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          
+          console.log('[Navbar] Mobile toggle positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          mobileToggle.style.removeProperty('position');
+          mobileToggle.style.removeProperty('top');
+          mobileToggle.style.removeProperty('transform');
+          mobileToggle.style.removeProperty('z-index');
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared mobile toggle inline positioning');
+        }
+      }
+      
+      if (phoneBtn) {
+        // Icon sizing applies to all viewports
+        const phoneIcon = phoneBtn.querySelector('svg');
+        if (phoneIcon) {
+          phoneIcon.style.width = '24px';
+          phoneIcon.style.height = '24px';
+          phoneIcon.setAttribute('width', '24');
+          phoneIcon.setAttribute('height', '24');
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          phoneBtn.style.setProperty('position', 'absolute', 'important');
+          phoneBtn.style.setProperty('top', '0', 'important');
+          phoneBtn.style.setProperty('bottom', '0', 'important');
+          phoneBtn.style.setProperty('margin-top', 'auto', 'important');
+          phoneBtn.style.setProperty('margin-bottom', 'auto', 'important');
+          phoneBtn.style.setProperty('transform', 'none', 'important');
+          phoneBtn.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          
+          console.log('[Navbar] Phone button positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          phoneBtn.style.removeProperty('position');
+          phoneBtn.style.removeProperty('top');
+          phoneBtn.style.removeProperty('transform');
+          phoneBtn.style.removeProperty('z-index');
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared phone button inline positioning');
+        }
+      }
+    } else {
+      console.log('[Navbar] Could not parse background color:', bgColor);
+    }
+    
+    // MOBILE MENU TOGGLE
+    // Re-query in case DOM changed (mobileToggle already declared at top of function)
+    mobileToggle = document.getElementById('mobileToggle') ||
+                   document.querySelector('.mobile-toggle') ||
+                   document.querySelector('.hamburger') ||
+                   document.querySelector('.hamburger-menu') ||
+                   document.querySelector('.menu-toggle') ||
+                   document.querySelector('.burger-menu') ||
+                   document.querySelector('[aria-label="Menu"]') ||
+                   document.querySelector('[aria-label="תפריט"]');
+    
+    // EXPANDED SEARCH: Find nav menu by ID or class
+    const navMenu = document.getElementById('navMenu') ||
+                  document.querySelector('.nav-menu') ||
+                  document.querySelector('.nav-links') ||
+                  document.querySelector('nav ul:not(.submenu)');
+    
+    if (!mobileToggle || !navMenu) {
+      console.log('[Navbar] Mobile toggle or menu not found:', { toggle: !!mobileToggle, menu: !!navMenu });
+      return;
+    }
+    
+    // Ensure navMenu has ID for CSS targeting
+    if (!navMenu.id) {
+      navMenu.id = 'navMenu';
+    }
+    
+    console.log('[Navbar] Initializing mobile menu...');
+    
+    // Remove any existing event listeners by cloning the button
+    const newToggle = mobileToggle.cloneNode(true);
+    mobileToggle.parentNode.replaceChild(newToggle, mobileToggle);
+    
+    // Toggle menu handler (shared by click and touchend)
+    function handleToggle(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const hamburgerIcon = newToggle.querySelector('.hamburger-icon');
+      const closeIcon = newToggle.querySelector('.close-icon');
+      const isActive = navMenu.classList.contains('active');
+      
+      if (isActive) {
+        // Close menu
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed');
+      } else {
+        // Open menu
+        navMenu.classList.add('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'none', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'block', 'important');
+        document.body.style.overflow = 'hidden';
+        console.log('[Navbar] Menu opened');
+      }
+    }
+    
+    // Use click for desktop/emulation and touchend as iOS Safari fallback.
+    // Prevent double-fire with a timestamp guard.
+    var lastToggleTime = 0;
+    function guardedToggle(e) {
+      var now = Date.now();
+      if (now - lastToggleTime < 300) return;
+      lastToggleTime = now;
+      handleToggle(e);
+    }
+    
+    newToggle.addEventListener('click', guardedToggle);
+    newToggle.addEventListener('touchend', guardedToggle);
+    
+    // Close menu when clicking nav links (but NOT dropdown toggles)
+    const navLinks = navMenu.querySelectorAll('a');
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        // Don't close if it's a dropdown child (unless it's a real navigation link)
+        if (this.getAttribute('href') === '#') return;
+        
+        const hamburgerIcon = newToggle.querySelector('.hamburger-icon');
+        const closeIcon = newToggle.querySelector('.close-icon');
+        
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed (link clicked)');
+      });
+    });
+    
+    // DROPDOWN MENU TOGGLE (for mobile and touch devices)
+    var dropdownToggles = navMenu.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent = this.closest('.nav-dropdown');
+        if (!parent) return;
+        
+        // Close other open dropdowns at the same level
+        var siblings = parent.parentNode.querySelectorAll('.nav-dropdown.open');
+        siblings.forEach(function(sib) {
+          if (sib !== parent) sib.classList.remove('open');
+        });
+        
+        parent.classList.toggle('open');
+        console.log('[Navbar] Dropdown toggled:', parent.classList.contains('open') ? 'open' : 'closed');
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        var openDropdowns = document.querySelectorAll('.nav-dropdown.open');
+        openDropdowns.forEach(function(dd) { dd.classList.remove('open'); });
+      }
+    });
+    
+    console.log('[Navbar] Dropdown handlers initialized for ' + dropdownToggles.length + ' dropdowns');
+    
+    // Phone button functionality (phoneBtn already declared at top of function)
+    if (phoneBtn) {
+      phoneBtn.addEventListener('click', function() {
+        // Get phone number from placeholder in page or use default
+        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+        const phoneNumber = phoneLinks.length > 0 
+          ? phoneLinks[0].getAttribute('href').replace('tel:', '')
+          : '[business_phone]';
+        
+        window.location.href = 'tel:' + phoneNumber;
+        console.log('[Navbar] Phone button clicked');
+      });
+    }
+    
+    console.log('[Navbar] Mobile menu initialized successfully');
+    
+    // WhatsApp button visibility is now controlled via CSS (siteSettings).
+    // No JS-based desktop hiding — the button is visible on both mobile and desktop by default.
+  });
+})();
+
+</script>
+  
+  <main id="main">
+    <section class="features-intro-section" data-layout-spec="תכונות-intro" dir="rtl">
+  <!-- Decorative background glows -->
+  <div class="features-intro-section__glow-blob features-intro-section__glow-blob--purple" aria-hidden="true"></div>
+  <div class="features-intro-section__glow-blob features-intro-section__glow-blob--cyan" aria-hidden="true"></div>
+  <!-- Floating dots decoration -->
+  <svg class="features-intro-section__dots" data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="40" r="3" fill="var(--secondary)" opacity="0.18"></circle>
+    <circle cx="80" cy="90" r="2" fill="var(--secondary)" opacity="0.14"></circle>
+    <circle cx="150" cy="30" r="4" fill="var(--secondary)" opacity="0.12"></circle>
+    <circle cx="50" cy="160" r="2.5" fill="var(--accent)" opacity="0.2"></circle>
+    <circle cx="170" cy="120" r="3" fill="var(--secondary)" opacity="0.15"></circle>
+    <circle cx="30" cy="230" r="2" fill="var(--accent)" opacity="0.16"></circle>
+    <circle cx="120" cy="200" r="3.5" fill="var(--secondary)" opacity="0.1"></circle>
+    <circle cx="190" cy="260" r="2" fill="var(--accent)" opacity="0.18"></circle>
+  </svg>
+
+  <div class="features-intro-section__container">
+    <!-- Centered header block -->
+    <div class="features-intro-section__header">
+      <span class="features-intro-section__badge">פיכפיכידע לכולם!</span>
+      <h1 class="features-intro-section__heading">הפלטפורמה שבה לומדים <span class="features-intro-section__heading-accent">לפכפך</span> וגם מרוויחים ידע</h1>
+      <p class="features-intro-section__subheading">מקום אחד שמשלב שיחה, סקרנות ולמידה מהנה — e-learning בגישה שונה לגמרי. כי ידע שמגיע עם חיוך נשאר לנצח.</p>
+    </div>
+
+    <!-- Two-column body -->
+    <div class="features-intro-section__body">
+      <!-- Content column (START = right in RTL) -->
+      <div class="features-intro-section__content">
+        <div class="features-intro-section__feature-list">
+          <div class="features-intro-section__feature-item">
+            <div class="features-intro-section__feature-icon">
+              <svg data-element-type="icon" data-icon-type="svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="var(--secondary)"></path>
+                <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z" fill="none" stroke="var(--secondary)" stroke-width="1.5"></path>
+                <circle cx="12" cy="12" r="3" fill="var(--secondary)" opacity="0.3"></circle>
+                <path d="M7 7l10 10M17 7L7 17" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round" opacity="0"></path>
+                <path d="M12 6v2M12 16v2M6 12h2M16 12h2" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round"></path>
+              </svg>
+            </div>
+            <div class="features-intro-section__feature-text">
+              <h3 class="features-intro-section__feature-title">לומדים תוך כדי פיכפוך</h3>
+              <p class="features-intro-section__feature-desc">הידע מגיע בצורה טבעית — דרך שיח, הומור ושיתוף. לא שינון, לא שעמום.</p>
+            </div>
+          </div>
+
+          <div class="features-intro-section__feature-item">
+            <div class="features-intro-section__feature-icon">
+              <svg data-element-type="icon" data-icon-type="svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z" fill="var(--accent)" opacity="0.85"></path>
+              </svg>
+            </div>
+            <div class="features-intro-section__feature-text">
+              <h3 class="features-intro-section__feature-title">ידע כללי שמשתלם</h3>
+              <p class="features-intro-section__feature-desc">תכנים מגוונים שמרחיבים אופקים — מדע, תרבות, היסטוריה ועוד, בפורמט שמתאים לכולם.</p>
+            </div>
+          </div>
+
+          <div class="features-intro-section__feature-item">
+            <div class="features-intro-section__feature-icon">
+              <svg data-element-type="icon" data-icon-type="svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="var(--secondary)" opacity="0.9"></path>
+              </svg>
+            </div>
+            <div class="features-intro-section__feature-text">
+              <h3 class="features-intro-section__feature-title">קהילה שלומדת ביחד</h3>
+              <p class="features-intro-section__feature-desc">משקיעים בגיל הרך! ילדים, הורים ומבוגרים — כולם מוזמנים ללמוד, לשתף ולצמוח יחד.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="features-intro-section__ctas">
+          <a href="/register" class="features-intro-section__btn features-intro-section__btn--primary">הרשמה עכשיו</a>
+          <a href="/contact" class="features-intro-section__btn features-intro-section__btn--secondary">צרו קשר</a>
+        </div>
+      </div>
+
+      <!-- Illustration panel (END = left in RTL) -->
+      <div class="features-intro-section__illustration-panel">
+        <div class="features-intro-section__illustration-glow" aria-hidden="true"></div>
+        <div class="features-intro-section__illustration-card">
+          <!-- Decorative motifs inside the panel -->
+          <div class="features-intro-section__motif-notebook" aria-hidden="true">
+            <svg data-no-icon-edit="true" aria-hidden="true" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="4" width="32" height="40" rx="4" fill="var(--accent)" opacity="0.2" stroke="var(--accent)" stroke-width="1.5"></rect>
+              <line x1="14" y1="16" x2="34" y2="16" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"></line>
+              <line x1="14" y1="23" x2="34" y2="23" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"></line>
+              <line x1="14" y1="30" x2="26" y2="30" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"></line>
+              <circle cx="8" cy="16" r="2" fill="var(--accent)" opacity="0.6"></circle>
+              <circle cx="8" cy="23" r="2" fill="var(--accent)" opacity="0.6"></circle>
+              <circle cx="8" cy="30" r="2" fill="var(--accent)" opacity="0.6"></circle>
+            </svg>
+          </div>
+          <div class="features-intro-section__motif-mouth" aria-hidden="true">
+            <svg data-no-icon-edit="true" aria-hidden="true" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="22" cy="22" r="20" fill="var(--secondary)" opacity="0.12" stroke="var(--secondary)" stroke-width="1.5"></circle>
+              <path d="M13 22 Q22 32 31 22" stroke="var(--secondary)" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+              <circle cx="16" cy="18" r="2.5" fill="var(--secondary)" opacity="0.8"></circle>
+              <circle cx="28" cy="18" r="2.5" fill="var(--secondary)" opacity="0.8"></circle>
+            </svg>
+          </div>
+          <div class="features-intro-section__motif-bulb" aria-hidden="true">
+            <svg data-no-icon-edit="true" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 6C14.48 6 10 10.48 10 16c0 3.54 1.82 6.64 4.57 8.49V28a1 1 0 001 1h8.86a1 1 0 001-1v-3.51C28.18 22.64 30 19.54 30 16c0-5.52-4.48-10-10-10z" fill="var(--accent)" opacity="0.25" stroke="var(--accent)" stroke-width="1.5"></path>
+              <rect x="15" y="29" width="10" height="2.5" rx="1.25" fill="var(--accent)" opacity="0.5"></rect>
+              <rect x="16.5" y="32.5" width="7" height="2" rx="1" fill="var(--accent)" opacity="0.4"></rect>
+              <line x1="20" y1="10" x2="20" y2="13" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round"></line>
+              <line x1="14" y1="12" x2="16" y2="14" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round"></line>
+              <line x1="26" y1="12" x2="24" y2="14" stroke="var(--secondary)" stroke-width="1.5" stroke-linecap="round"></line>
+            </svg>
+          </div>
+          <img loading="eager" fetchpriority="high" data-placeholder="features-intro-image-1" data-context="A glowing dark-mode educational platform interface showing a Hebrew learning website with playful doodle elements: a notebook with glowing cyan lines, a smiling mouth icon, and a lightbulb motif. The screen shows a chat-style learning interface with colorful knowledge cards, purple and cyan neon accents, and a warm inviting layout. Cinematic dark background with electric glow effects. Photorealistic UI mockup floating in space with soft purple radial glow behind it." width="560" height="420" src="/assets/site-features-intro-image-1.webp" alt="ממשק פיכפיכידע — פלטפורמת למידה חינמית ומהנה" class="features-intro-section__illustration-img">
+          <!-- Wavy underline accent -->
+          <svg class="features-intro-section__wavy-accent" data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 180 18" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,9 Q15,2 30,9 T60,9 T90,9 T120,9 T150,9 T180,9" stroke="var(--secondary)" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.85"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom curved divider into lighter section -->
+  <div class="features-intro-section__divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,50 Q300,10 600,40 Q900,70 1200,30 L1200,80 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="features-benefits-section" data-layout-spec="תכונות-benefits" dir="rtl">
+  <div class="features-benefits-container">
+
+    <!-- Section Header -->
+    <div class="features-benefits-header">
+      <h2 class="features-benefits-title">למה <span class="features-benefits-highlight">פיכפיכידע</span> עובד לכולם?</h2>
+      <p class="features-benefits-subtitle">פלטפורמת e-learning שמשלבת ידע אמיתי עם כיף אמיתי — לכל גיל, לכל משפחה</p>
+    </div>
+
+    <!-- 2x2 Benefits Grid -->
+    <div class="features-benefits-grid">
+
+      <!-- Benefit 1 -->
+      <article class="features-benefit-card">
+        <div class="features-benefit-inner">
+          <div class="features-benefit-icon-wrap">
+            <svg data-element-type="icon" data-icon-type="svg" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="1.5" opacity="0.2"></circle>
+              <path d="M10 16.5l4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="16" cy="16" r="6" fill="currentColor" opacity="0.12"></circle>
+            </svg>
+          </div>
+          <div class="features-benefit-content">
+            <h3 class="features-benefit-title">ביטחון בביטוי עצמי</h3>
+            <p>לומדים לדבר בחופשיות, לשאול שאלות ולהביע דעה — בלי פחד ובלי בושה. כל שיעור בפיכפיכידע מחזק את הקול האישי שלך.</p>
+            <figure class="features-benefit-img-wrap">
+              <img loading="lazy" decoding="async" data-placeholder="features-benefits-image-1" data-context="A cheerful child or teenager confidently speaking and gesturing expressively in a bright, playful educational setting, warm lighting, illustrative and inviting style for an Israeli educational platform" width="480" height="280" src="/assets/site-features-benefits-image-1.webp" alt="ילד מביע את עצמו בביטחון">
+            </figure>
+          </div>
+        </div>
+      </article>
+
+      <!-- Benefit 2 -->
+      <article class="features-benefit-card">
+        <div class="features-benefit-inner">
+          <div class="features-benefit-icon-wrap">
+            <svg data-element-type="icon" data-icon-type="svg" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="1.5" opacity="0.2"></circle>
+              <path d="M16 8v8l5 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="16" cy="16" r="6" fill="currentColor" opacity="0.12"></circle>
+            </svg>
+          </div>
+          <div class="features-benefit-content">
+            <h3 class="features-benefit-title">הרגלי למידה מהנים</h3>
+            <p>כשהלמידה מצחיקה — היא נדבקת. פיכפיכידע הופך electronic learning לחלק טבעי מהיום, בלי לחץ ובלי שעמום.</p>
+            <figure class="features-benefit-img-wrap">
+              <img loading="lazy" decoding="async" data-placeholder="features-benefits-image-2" data-context="A happy family or group of kids laughing together while learning on a tablet or computer, colorful and playful atmosphere, modern Israeli educational platform aesthetic" width="480" height="280" src="/assets/site-features-benefits-image-2.webp" alt="ילדים לומדים ומשחקים יחד">
+            </figure>
+          </div>
+        </div>
+      </article>
+
+      <!-- Benefit 3 -->
+      <article class="features-benefit-card">
+        <div class="features-benefit-inner">
+          <div class="features-benefit-icon-wrap">
+            <svg data-element-type="icon" data-icon-type="svg" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="1.5" opacity="0.2"></circle>
+              <path d="M10 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              <circle cx="16" cy="11" r="2.5" fill="currentColor" opacity="0.7"></circle>
+              <path d="M7 22h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"></path>
+            </svg>
+          </div>
+          <div class="features-benefit-content">
+            <h3 class="features-benefit-title">טון ידידותי למשפחה</h3>
+            <p>התכנים כתובים בשפה חמה, מכבדת ומצחיקה — מתאימים לילדים, להורים ולסבתא גם יחד. פיכפיכידע לכולם!</p>
+            <figure class="features-benefit-img-wrap">
+              <img loading="lazy" decoding="async" data-placeholder="features-benefits-image-3" data-context="A warm multi-generational Israeli family — grandparents, parents and children — sitting together and enjoying a learning activity on a screen, cozy home setting, friendly and inclusive tone" width="480" height="280" src="/assets/site-features-benefits-image-3.webp" alt="משפחה לומדת יחד בשמחה">
+            </figure>
+          </div>
+        </div>
+      </article>
+
+      <!-- Benefit 4 -->
+      <article class="features-benefit-card">
+        <div class="features-benefit-inner">
+          <div class="features-benefit-icon-wrap">
+            <svg data-element-type="icon" data-icon-type="svg" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="1.5" opacity="0.2"></circle>
+              <path d="M9 16a7 7 0 1 0 14 0 7 7 0 0 0-14 0z" stroke="currentColor" stroke-width="2"></path>
+              <path d="M16 12v4l2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="16" cy="16" r="2.5" fill="currentColor" opacity="0.25"></circle>
+            </svg>
+          </div>
+          <div class="features-benefit-content">
+            <h3 class="features-benefit-title">נגיש לכל גיל ורמה</h3>
+            <p>משקיעים בגיל הרך! מגיל 6 ועד 106 — הממשק פשוט, הכתב גדול והתכנים מותאמים לכל אחד. אין צורך בידע מוקדם.</p>
+            <figure class="features-benefit-img-wrap">
+              <img loading="lazy" decoding="async" data-placeholder="features-benefits-image-4" data-context="A diverse range of learners of different ages — young child, teenager, adult, and elderly person — each happily using a simple and accessible digital learning interface, clean modern design, inclusive and welcoming" width="480" height="280" src="/assets/site-features-benefits-image-4.webp" alt="נגישות לכל גיל">
+            </figure>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <!-- End Grid -->
+
+  </div>
+
+  <!-- Bottom Wave Divider (ivory upper → charcoal lower) -->
+  <div class="features-benefits-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Upper ivory wave layer -->
+      <path d="M0,90 L0,55 Q60,42 120,52 T240,46 Q300,52 360,44 T480,50 Q540,44 600,52 T720,46 Q780,52 840,44 T960,50 Q1020,44 1080,52 T1200,48 L1200,90 Z" fill="#14181F" opacity="0.35"></path>
+      <!-- Lower charcoal wave layer -->
+      <path d="M0,90 L0,65 Q80,50 160,62 T320,54 Q400,62 480,54 T640,60 Q720,54 800,62 T960,56 Q1040,62 1120,54 T1200,60 L1200,90 Z" fill="#14181F"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section class="features-showcase-section" data-layout-spec="תכונות-showcase" dir="rtl">
+  <!-- Decorative background blobs -->
+  <div class="fss-blob fss-blob-1" aria-hidden="true"></div>
+  <div class="fss-blob fss-blob-2" aria-hidden="true"></div>
+
+  <div class="fss-container">
+    <!-- Section Header -->
+    <div class="fss-header">
+      <span class="fss-label">גלה את הקסם</span>
+      <h2 class="fss-title">רגעים של למידה <span class="fss-title-accent">שמחייכים</span></h2>
+      <p class="fss-subtitle">פיכפיכידע היא חוויית הלמידה שתמיד חיכית לה — כיפית, חכמה, ומלאת אנרגיה</p>
+
+      <!-- Wavy underline accent -->
+      <svg class="fss-wavy-underline" data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 180 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,6 Q15,0 30,6 T60,6 T90,6 T120,6 T150,6 T180,6" stroke="var(--secondary)" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+      </svg>
+    </div>
+
+    <!-- Three-Panel Showcase -->
+    <div class="fss-panels">
+
+      <!-- Panel 1: Playful Speech Practice -->
+      <article class="fss-panel fss-panel-side">
+        <div class="fss-panel-image-wrap">
+          <img loading="lazy" decoding="async" data-placeholder="features-showcase-image-1" data-context="A joyful child or young student sitting at a colorful desk, enthusiastically chatting and gesturing with speech bubbles floating around them, illustrated in a warm, playful educational style with a dark navy background and glowing cyan and purple accent lights. The scene feels like a fun classroom game or language activity." width="480" height="620" src="/assets/site-features-showcase-image-1.webp" alt="תרגול שיחה משחקי עם פיכפיכידע">
+          <div class="fss-panel-glow fss-glow-cyan" aria-hidden="true"></div>
+        </div>
+        <div class="fss-panel-content">
+          <div class="fss-panel-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+              <path d="M4 8C4 6.9 4.9 6 6 6H26C27.1 6 28 6.9 28 8V20C28 21.1 27.1 22 26 22H18L12 28V22H6C4.9 22 4 21.1 4 20V8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+              <circle cx="11" cy="14" r="1.5" fill="currentColor"></circle>
+              <circle cx="16" cy="14" r="1.5" fill="currentColor"></circle>
+              <circle cx="21" cy="14" r="1.5" fill="currentColor"></circle>
+            </svg>
+          </div>
+          <h3 class="fss-panel-title">פיכפוך בלי גבולות</h3>
+          <p class="fss-panel-desc">מתרגלים שיחה חופשית, מרחיבים אוצר מילים ומגלים שלדבר זה הכי כיף שיש.</p>
+          <div class="fss-panel-tag">e-learning in education</div>
+        </div>
+      </article>
+
+      <!-- Panel 2 (CENTER - LARGER): Trivia-style Learning -->
+      <article class="fss-panel fss-panel-center">
+        <div class="fss-panel-image-wrap">
+          <img loading="lazy" decoding="async" data-placeholder="features-showcase-image-2" data-context="A vibrant trivia quiz game screen shown on a tablet or large display, with colorful multiple-choice bubbles, a glowing scoreboard, and excited animated characters celebrating correct answers. The aesthetic is dark-mode cinematic with neon cyan and violet glow effects, evoking a fun game-show atmosphere for educational trivia." width="560" height="720" src="/assets/site-features-showcase-image-2.webp" alt="למידה בסגנון טריוויה כיפית עם פיכפיכידע">
+          <div class="fss-panel-glow fss-glow-violet" aria-hidden="true"></div>
+          <div class="fss-center-badge" aria-hidden="false">⭐ הכי פופולרי</div>
+        </div>
+        <div class="fss-panel-content">
+          <div class="fss-panel-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+              <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"></circle>
+              <path d="M13 12C13 10.3 14.3 9 16 9C17.7 9 19 10.3 19 12C19 13.5 18 14.5 16.8 15.3C16.3 15.6 16 16.1 16 16.7V18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              <circle cx="16" cy="21" r="1" fill="currentColor"></circle>
+            </svg>
+          </div>
+          <h3 class="fss-panel-title">ידע שמרגיש כמו משחק</h3>
+          <p class="fss-panel-desc">שאלות טריוויה, אתגרים יומיים ורמות עולות — כל שאלה נכונה מרגישה כמו ניצחון.</p>
+          <div class="fss-panel-tag">פיכפיכידע לכולם!</div>
+        </div>
+      </article>
+
+      <!-- Panel 3: Family-oriented atmosphere -->
+      <article class="fss-panel fss-panel-side">
+        <div class="fss-panel-image-wrap">
+          <img loading="lazy" decoding="async" data-placeholder="features-showcase-image-3" data-context="A warm and inviting family scene with parents and young children gathered around a glowing tablet or screen, laughing and learning together. The mood is cozy yet cinematic with a dark background, soft warm lighting on their faces, and subtle cyan and purple glow from the device. Represents the supportive family-oriented educational atmosphere of a playful learning platform." width="480" height="620" src="/assets/site-features-showcase-image-3.webp" alt="אווירה משפחתית ותומכת בפיכפיכידע">
+          <div class="fss-panel-glow fss-glow-cyan" aria-hidden="true"></div>
+        </div>
+        <div class="fss-panel-content">
+          <div class="fss-panel-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+              <path d="M16 6C13.8 6 12 7.8 12 10C12 12.2 13.8 14 16 14C18.2 14 20 12.2 20 10C20 7.8 18.2 6 16 6Z" stroke="currentColor" stroke-width="2"></path>
+              <path d="M8 28C8 23.6 11.6 20 16 20C20.4 20 24 23.6 24 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M6 18C4.3 18 3 19.3 3 21C3 22.7 4.3 24 6 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M26 18C27.7 18 29 19.3 29 21C29 22.7 27.7 24 26 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <h3 class="fss-panel-title">משקיעים בגיל הרך!</h3>
+          <p class="fss-panel-desc">סביבה חמה ומזמינה שמתאימה לכל המשפחה — ילדים, הורים וסבתות גאות.</p>
+          <div class="fss-panel-tag">electronic learning</div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- Bottom angled divider with cyan seam glow -->
+  <div class="fss-divider-wrapper">
+    <div class="fss-seam-glow" aria-hidden="true"></div>
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,28 L1440,0 L1440,80 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="features-process-section" data-layout-spec="תכונות-process" dir="rtl">
+  <div class="features-process-container">
+
+    <!-- Section Header -->
+    <div class="features-process-header">
+      <span class="features-process-badge">איך זה עובד?</span>
+      <h2 class="features-process-title">שלושה צעדים פשוטים<br>להתחיל לפכפך וללמוד</h2>
+      <p class="features-process-subtitle">הצטרפות לפיכפיכידע קלה, מהירה, ומהנה — <em>פיכפיכידע לכולם!</em></p>
+    </div>
+
+    <!-- Steps Flow -->
+    <div class="features-process-steps">
+
+      <!-- Step 1 -->
+      <article class="features-process-step step-1">
+        <div class="step-image-wrapper">
+          <img loading="lazy" decoding="async" data-placeholder="features-process-image-1" data-context="A cheerful child or young adult registering on a colorful educational website on a tablet or laptop, warm ivory background, playful doodle-style illustration, Hebrew educational platform, bright and welcoming atmosphere" width="280" height="180" src="/assets/site-features-process-image-1.webp" alt="הרשמה לפלטפורמה הלימודית פיכפיכידע">
+        </div>
+        <div class="step-number-badge">01</div>
+        <div class="step-content">
+          <h3 class="step-title">נרשמים תוך דקה</h3>
+          <p class="step-description">ממלאים שם, מייל ופרטי הורה — וזהו! ההרשמה פשוטה, מהירה, ובלי סיבוכים מיותרים.</p>
+        </div>
+      </article>
+
+      <!-- Connector 1 -->
+      <div class="features-process-connector" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="6" cy="12" r="3" fill="var(--secondary)" opacity="0.7"></circle>
+          <circle cx="18" cy="12" r="2" fill="var(--secondary)" opacity="0.5"></circle>
+          <circle cx="28" cy="12" r="2" fill="var(--secondary)" opacity="0.5"></circle>
+          <circle cx="38" cy="12" r="2" fill="var(--secondary)" opacity="0.5"></circle>
+          <circle cx="48" cy="12" r="3" fill="var(--secondary)" opacity="0.7"></circle>
+          <path d="M48 12 L56 12" stroke="var(--secondary)" stroke-width="2" stroke-dasharray="3 2"></path>
+          <polygon points="56,8 62,12 56,16" fill="var(--secondary)" opacity="0.7"></polygon>
+        </svg>
+      </div>
+
+      <!-- Step 2 -->
+      <article class="features-process-step step-2">
+        <div class="step-image-wrapper">
+          <img loading="lazy" decoding="async" data-placeholder="features-process-image-2" data-context="A joyful student or child laughing and learning through a fun quiz or trivia game on screen, colorful speech bubbles, playful educational interface with Hebrew text, bright and energetic learning experience" width="280" height="180" src="/assets/site-features-process-image-2.webp" alt="למידה משחקית ומהנה בפיכפיכידע">
+        </div>
+        <div class="step-number-badge">02</div>
+        <div class="step-content">
+          <h3 class="step-title">לומדים תוך כדי שיחה</h3>
+          <p class="step-description">מתחילים לפכפך! שאלות, טריוויה, ומידע מגניב — הכל עטוף בהומור ובכיף אמיתי.</p>
+        </div>
+      </article>
+
+      <!-- Connector 2 -->
+      <div class="features-process-connector" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="6" cy="12" r="3" fill="var(--secondary)" opacity="0.7"></circle>
+          <circle cx="18" cy="12" r="2" fill="var(--secondary)" opacity="0.5"></circle>
+          <circle cx="28" cy="12" r="2" fill="var(--secondary)" opacity="0.5"></circle>
+          <circle cx="38" cy="12" r="2" fill="var(--secondary)" opacity="0.5"></circle>
+          <circle cx="48" cy="12" r="3" fill="var(--secondary)" opacity="0.7"></circle>
+          <path d="M48 12 L56 12" stroke="var(--secondary)" stroke-width="2" stroke-dasharray="3 2"></path>
+          <polygon points="56,8 62,12 56,16" fill="var(--secondary)" opacity="0.7"></polygon>
+        </svg>
+      </div>
+
+      <!-- Step 3 (Gold accent) -->
+      <article class="features-process-step step-3 step-gold">
+        <div class="step-image-wrapper">
+          <img loading="lazy" decoding="async" data-placeholder="features-process-image-3" data-context="A proud and happy student or child celebrating learning achievements, gold star badges, knowledge growth visualization, warm golden glow, educational progress milestones, cheerful and empowering atmosphere" width="280" height="180" src="/assets/site-features-process-image-3.webp" alt="צמיחה וקידום בידע עם פיכפיכידע">
+        </div>
+        <div class="step-number-badge step-number-gold">03</div>
+        <div class="step-content">
+          <h3 class="step-title">גדלים וממשיכים לגלות</h3>
+          <p class="step-description">עם כל שיחה הידע מתרחב. משקיעים בגיל הרך! ממשיכים לצמוח, לגלות, ולהפתיע את עצמכם.</p>
+        </div>
+        <!-- Gold wavy underline decoration -->
+        <svg class="step-wavy-underline" data-no-icon-edit="true" aria-hidden="true" width="120" height="12" viewBox="0 0 120 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2,8 Q15,2 28,8 Q41,14 54,8 Q67,2 80,8 Q93,14 106,8 Q113,4 118,8" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+        </svg>
+      </article>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="features-process-cta">
+      <a href="/register" class="features-process-btn">הצטרפו עכשיו — בחינם!</a>
+      <p class="features-process-cta-note">ללא כרטיס אשראי · הרשמה מהירה · מתאים לכל גיל</p>
+    </div>
+
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer" dir="rtl" aria-label="כותרת תחתונה של האתר"> <div class="footer-container"> <div class="footer-top"> <div class="footer-col footer-brand"> <img src="/assets/education-learning-logo.webp" alt="פיכפיכידע" class="logo"> <p class="footer-tagline">פיכפיכידע — פלטפורמת הלמידה שמדליקה את הסקרנות.<br>חינוך חכם, חוויה קולנועית, תוצאות אמיתיות.</p> <div class="footer-badges"> <span class="badge"><i class="fas fa-bolt"></i> למידה בקצב שלך</span> <span class="badge"><i class="fas fa-shield-alt"></i> תוכן מאומת</span> </div> </div> <div class="footer-col footer-links"> <h3 class="footer-heading">ניווט מהיר</h3> <ul class="footer-nav"> <li><a href="/">בית</a></li> <li><a href="/features">תכונות</a></li> <li><a href="/about">אודות</a></li> <li><a href="/contact">צור קשר</a></li> </ul> </div> <div class="footer-col footer-contact-col"> <h3 class="footer-heading">יצירת קשר</h3> <ul class="footer-contact"> <li> <span class="contact-icon"><i class="fas fa-envelope"></i></span> <span class="contact-text"><a href="mailto:[business_email]">[business_email]</a></span> </li> <li> <span class="contact-icon"><i class="fas fa-phone"></i></span> <span class="contact-text"><a href="tel:[business_phone]">[business_phone]</a></span> </li> <li><a href="/"><span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span> <span class="contact-text">[business_address]</span></a></li> </ul> </div> <div class="footer-col footer-social-col"> <h3 class="footer-heading">עקבו אחרינו</h3> <div class="footer-social">    </div> <div class="footer-hours"> <h4 class="footer-subheading">שעות פעילות</h4> <p><span>ראשון–חמישי</span><span>08:00–20:00</span></p> <p><span>שישי</span><span>08:00–14:00</span></p> <p><span>שבת</span><span class="closed">סגור</span></p> </div> </div> </div> <div class="footer-divider"></div> <div class="footer-bottom"> <p class="footer-copy">© 2026 פיכפיכידע. כל הזכויות שמורות.</p> <div class="footer-legal"> <a href="/privacy">מדיניות פרטיות</a> <span class="footer-sep">|</span> <a href="/terms">תנאי שימוש</a> <span class="footer-sep">|</span> <a href="/accessibility">נגישות</a> <span class="footer-sep">|</span> <a href="https://zappy5.com" target="_blank" class="zappy-attribution">נוצר באמצעות Zappy</a> </div> </div> </div> <div class="footer-glow footer-glow--cyan"></div> <div class="footer-glow footer-glow--violet"></div> </footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+</body>
+</html>
